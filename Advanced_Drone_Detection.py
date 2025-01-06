@@ -68,6 +68,7 @@ while True:
             cv2.putText(frame, text_size, (int(x1), int(y1) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # Check if the drone intersects with or is inside the rectangle
+            if width >= 150 and height >= 150:  # Если размеры >= 150x150
             if rectangle_coords[0] != rectangle_coords[1]:
                 if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1] for x, y in
                     [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]) or \
