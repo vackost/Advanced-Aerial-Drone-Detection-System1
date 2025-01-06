@@ -16,6 +16,8 @@ classes = ['Drone']
 rectangle_coords = [(50, 50), (250, 50), (250, 250), (50, 250)]
 rectangle_drag = False
 drag_corner = -1
+tracked_objects = []
+
 
 # Function to handle mouse events
 def mouse_event(event, x, y, flags, param):
@@ -54,6 +56,11 @@ while True:
     for result in results.xyxy[0]:
         x1, y1, x2, y2, conf, cls = result.tolist()
         if conf > 0.6 and classes[int(cls)] in classes:
+            bbox = (int(x1), int(y1), int(x2), int(y2))
+            if bbox in tracked_objects:
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        else:
+            tracked_objects.append(bbox)
             # Draw the bounding box
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
 
