@@ -54,15 +54,18 @@ while True:
 
     # Process the results and draw bounding boxes on the frame
     for result in results.xyxy[0]:
-        x1, y1, x2, y2, conf, cls = result.tolist()
-        if conf > 0.6 and classes[int(cls)] in classes:
-            bbox = (int(x1), int(y1), int(x2), int(y2))
-            if bbox in tracked_objects:
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        else:
-            tracked_objects.append(bbox)
-            # Draw the bounding box
+    x1, y1, x2, y2, conf, cls = result.tolist()
+
+    if conf > 0.6 and classes[int(cls)] in classes:
+        # Создаем bounding box для текущего объекта
+        bbox = (int(x1), int(y1), int(x2), int(y2))
+
+        if bbox in tracked_objects:
+            # Отображаем только "стабильные" объекты
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
+        else:
+            # Добавляем объект в список отслеживаемых
+            tracked_objects.append(bbox)
 
             # Display the confidence score above the box
             width = int(x2 - x1)
