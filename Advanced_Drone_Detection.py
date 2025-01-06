@@ -58,6 +58,8 @@ while True:
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
 
             # Display the confidence score above the box
+            width = int(x2 - x1)
+        height = int(y2 - y1)
             text_conf = "{:.2f}%".format(conf * 100)
             cv2.putText(frame, text_conf, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
