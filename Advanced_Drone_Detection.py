@@ -62,8 +62,8 @@ while True:
             cv2.putText(frame, text_conf, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             # Display the bounding box coordinates below the box
-            text_coords = "({}, {})".format(int((x1 + x2) / 2), int(y2))
-            cv2.putText(frame, text_coords, (int(x1), int(y2) + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            text_size = "W: {}, H: {}".format(width, height)
+            cv2.putText(frame, text_size, (int(x1), int(y1) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # Check if the drone intersects with or is inside the rectangle
             if rectangle_coords[0] != rectangle_coords[1]:
