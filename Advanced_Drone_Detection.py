@@ -53,7 +53,7 @@ while True:
     # Process the results and draw bounding boxes on the frame
     for result in results.xyxy[0]:
         x1, y1, x2, y2, conf, cls = result.tolist()
-        if conf > 0.5 and classes[int(cls)] in classes:
+        if conf > 0.6 and classes[int(cls)] in classes:
             # Draw the bounding box
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
 
