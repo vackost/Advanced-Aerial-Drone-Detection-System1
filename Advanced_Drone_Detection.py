@@ -48,14 +48,14 @@ while True:
     # Process detection results
     for result in results.xyxy[0]:
         x1, y1, x2, y2, conf, cls = result.tolist()
-        if conf > 0.6 and classes[int(cls)] in classes:
+        if conf > 0.5 and classes[int(cls)] in classes:
             # Calculate bounding box dimensions
             bbox = (int(x1), int(y1), int(x2), int(y2))
             width = int(x2 - x1)
             height = int(y2 - y1)
 
             # Check size and track stability
-            if width >= 150 and height >= 150:
+
                 if bbox in tracked_objects:
                     # Draw rectangle for stable objects
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
@@ -68,6 +68,7 @@ while True:
                     tracked_objects.append(bbox)
 
                 # Check if the object intersects with the restricted area
+             if width >= 150 and height >= 150:
                 if rectangle_coords[0] != rectangle_coords[1]:
                     if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1]
                            for x, y in [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]):
