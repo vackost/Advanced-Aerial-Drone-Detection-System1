@@ -54,21 +54,19 @@ while True:
             width = int(x2 - x1)
             height = int(y2 - y1)
 
-            # Check size and track stability
+            # Always draw the rectangle for tracking
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+            text_conf = "{:.2f}%".format(conf * 100)
+            text_size = "W: {}, H: {}".format(width, height)
+            cv2.putText(frame, text_conf, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            cv2.putText(frame, text_size, (int(x1), int(y1) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-                if bbox in tracked_objects:
-                    # Draw rectangle for stable objects
-                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
-                    text_conf = "{:.2f}%".format(conf * 100)
-                    text_size = "W: {}, H: {}".format(width, height)
-                    cv2.putText(frame, text_conf, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                    cv2.putText(frame, text_size, (int(x1), int(y1) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                else:
-                    # Add new object to tracking list
-                    tracked_objects.append(bbox)
+            # Add the object to tracking list
+            if bbox not in tracked_objects:
+                tracked_objects.append(bbox)
 
-                # Check if the object intersects with the restricted area
-             if width >= 150 and height >= 150:
+            # Check if the object intersects with the restricted area
+            if width >= 150 and height >= 150:
                 if rectangle_coords[0] != rectangle_coords[1]:
                     if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1]
                            for x, y in [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]):
