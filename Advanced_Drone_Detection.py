@@ -1,6 +1,5 @@
 import cv2
 import torch
-import numpy as np
 from PIL import Image
 
 # Load YOLOv5 model
@@ -12,7 +11,7 @@ cap = cv2.VideoCapture(0)
 # Define the classes you want to detect
 classes = ['Drone']
 
-# Initialize the rectangle coordinates
+# Initialize rectangle coordinates
 rectangle_coords = [(50, 50), (250, 50), (250, 250), (50, 250)]
 rectangle_drag = False
 drag_corner = -1
@@ -44,8 +43,15 @@ while True:
     # Read frame from video source
     ret, frame = cap.read()
 
+    if not ret:
+        print("Failed to capture frame.")
+        break
+
+    # Flip the frame vertically
+    frame = cv2.flip(frame, 0)
+
     # Convert the frame to a format that YOLOv5 can process
-    img = Image.fromarray(frame[...,::-1])
+    img = Image.fromarray(frame[..., ::-1])
 
     # Run inference on the frame
     results = model(img, size=640)
@@ -67,18 +73,15 @@ while True:
 
             # Check if the drone intersects with or is inside the rectangle
             if rectangle_coords[0] != rectangle_coords[1]:
-                if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1] for x, y in
-                    [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]) or \
-                        any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1] for x in range(int(x1), int(x2))
-                            for y in range(int(y1), int(y2))):
-                    # Display a warning message
-                    cv2.putText(frame, "Warning: Drone Detected Under Restricted Area!", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-
+                if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1]
+                       for x, y in [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]):
+                    cv2.putText(frame, "Warning: Drone Detected Under Restricted Area!",
+                                (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
     # Draw the rectangle
     for i in range(4):
         cv2.circle(frame, rectangle_coords[i], 5, (0, 255, 0), -1)
-        cv2.line(frame, rectangle_coords[i], rectangle_coords[(i+1)%4], (0, 255, 0), 2)
+        cv2.line(frame, rectangle_coords[i], rectangle_coords[(i + 1) % 4], (0, 255, 0), 2)
 
     # Display the resulting frame
     cv2.imshow('frame', frame)
