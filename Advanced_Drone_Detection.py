@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 # Load YOLOv5 model
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='C:/Users/ayuku/Downloads/best.pt', source='github')
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='/home/vackost/Advanced-Aerial-Drone-Detection-System1/best.pt', source='github')
 
 # Set video source (webcam or video file)
 cap = cv2.VideoCapture(0)
@@ -54,19 +54,23 @@ while True:
     for result in results.xyxy[0]:
         x1, y1, x2, y2, conf, cls = result.tolist()
         if conf > 0.5 and classes[int(cls)] in classes:
+        if conf > 0.6 and classes[int(cls)] in classes:
             # Draw the bounding box
             cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
 
             # Display the confidence score above the box
+            width = int(x2 - x1)
+            height = int(y2 - y1)
             text_conf = "{:.2f}%".format(conf * 100)
             cv2.putText(frame, text_conf, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             # Display the bounding box coordinates below the box
-            text_coords = "({}, {})".format(int((x1 + x2) / 2), int(y2))
-            cv2.putText(frame, text_coords, (int(x1), int(y2) + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            text_size = "W: {}, H: {}".format(width, height)
+            cv2.putText(frame, text_size, (int(x1), int(y1) - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # Check if the drone intersects with or is inside the rectangle
-            if rectangle_coords[0] != rectangle_coords[1]:
+            if width >= 150 and height >= 150:  # Если размеры >= 150x150
+              if rectangle_coords[0] != rectangle_coords[1]:
                 if any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1] for x, y in
                     [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]) or \
                         any(rectangle_coords[0][0] <= x <= rectangle_coords[2][0] and rectangle_coords[0][1] <= y <= rectangle_coords[2][1] for x in range(int(x1), int(x2))
